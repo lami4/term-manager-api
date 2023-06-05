@@ -129,4 +129,9 @@ public class User {
     public void setPrivileges(Set<Privilege> privileges) {
         this.privileges = privileges;
     }
+
+    @JsonIgnore
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
+    }
 }

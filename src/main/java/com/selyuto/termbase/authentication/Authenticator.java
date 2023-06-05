@@ -1,5 +1,8 @@
 package com.selyuto.termbase.authentication;
 
+import com.selyuto.termbase.models.User;
+import com.selyuto.termbase.services.UserService;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -8,11 +11,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.Cookie;
+
 @Component
 public class Authenticator {
 
     private ConcurrentHashMap <Long, String> activeSessions = new ConcurrentHashMap<>();
     private ConcurrentHashMap <String, Long> cookieExpireDates = new ConcurrentHashMap<>();
+
+    private final UserService userService;
+
+    public Authenticator(UserService userService) {
+        this.userService = userService;
+    }
 
     public Map<Long, String> getActiveSessions() {
         return activeSessions;
@@ -59,5 +70,11 @@ public class Authenticator {
 
     public boolean isUserAlreadyAuthenticated(Long userId) {
         return activeSessions.get(userId) != null;
+    }
+
+    public User getUserBySessionIdCookie(Cookie sessionIdCookie) {
+        if (sessionIdCookie == null) return null;
+        Optional<Long> id = findUserIdBySessionId(sessionIdCookie.getValue());
+        return id.map(userService::getUserById).orElse(null);
     }
 }

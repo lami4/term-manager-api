@@ -48,7 +48,7 @@ public class TermController {
     @PostMapping("")
     public ResponseEntity<Long> creteTerm(@RequestBody Term term) {
         try {
-            Long id = termService.saveTerm(term);
+            Long id = termService.createTerm(term);
             return new ResponseEntity<>(id, HttpStatus.OK);
         } catch (HibernateException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -57,7 +57,7 @@ public class TermController {
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateTerm(@RequestBody Term term, @PathVariable Long id) {
         try {
-            termService.saveTerm(term);
+            termService.updateTerm(term);
             return new ResponseEntity<>(id, HttpStatus.OK);
         } catch (HibernateException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
