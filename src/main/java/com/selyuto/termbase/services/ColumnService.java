@@ -36,8 +36,9 @@ public class ColumnService {
         return column.getId();
     }
 
-    public void updateColumn(Column column) {
+    public Column updateColumn(Column column) {
         columnRepository.save(column);
+        return getColumnById(column.getId());
     }
 
     @Transactional

@@ -45,9 +45,9 @@ public class TermService {
         return term.getId();
     }
 
-    public Long updateTerm(Term term) {
+    public Term updateTerm(Term term) {
         termRepository.save(term);
-        return term.getId();
+        return getTermById(term.getId());
     }
 
     public void deleteTerm(Long id) {

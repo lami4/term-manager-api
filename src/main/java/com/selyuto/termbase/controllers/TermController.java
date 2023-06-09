@@ -55,10 +55,10 @@ public class TermController {
         }
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Long> updateTerm(@RequestBody Term term, @PathVariable Long id) {
+    public ResponseEntity<Term> updateTerm(@RequestBody Term term, @PathVariable Long id) {
         try {
-            termService.updateTerm(term);
-            return new ResponseEntity<>(id, HttpStatus.OK);
+            Term updatedTerm = termService.updateTerm(term);
+            return new ResponseEntity<>(updatedTerm, HttpStatus.OK);
         } catch (HibernateException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

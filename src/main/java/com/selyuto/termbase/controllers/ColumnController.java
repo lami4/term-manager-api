@@ -58,10 +58,10 @@ public class ColumnController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateColumn(@RequestBody Column column, @PathVariable Integer id) {
+    public ResponseEntity<Column> updateColumn(@RequestBody Column column, @PathVariable Integer id) {
         try {
-            columnService.updateColumn(column);
-            return new ResponseEntity<>(id, HttpStatus.OK);
+            Column updatedColumn = columnService.updateColumn(column);
+            return new ResponseEntity<>(updatedColumn, HttpStatus.OK);
         } catch (HibernateException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
