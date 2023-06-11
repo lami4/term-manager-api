@@ -1,16 +1,11 @@
 package com.selyuto.termbase.filters;
 
 import com.selyuto.termbase.authentication.Authenticator;
-import com.selyuto.termbase.models.User;
-import com.selyuto.termbase.services.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.UUID;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthenticationFilter implements Filter {
     private final Authenticator authenticator;
 
-    public AuthenticationFilter(Authenticator authenticator, UserService userService) {
+    public AuthenticationFilter(Authenticator authenticator) {
         this.authenticator = authenticator;
     }
 

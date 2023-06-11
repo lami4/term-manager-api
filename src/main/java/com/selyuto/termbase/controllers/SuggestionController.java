@@ -57,10 +57,10 @@ public class SuggestionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Long> updateSuggestion(@RequestBody Suggestion suggestion, @PathVariable Long id) {
+    public ResponseEntity<Suggestion> updateSuggestion(@RequestBody Suggestion suggestion, @PathVariable Long id) {
         try {
-            suggestionService.updateSuggestion(suggestion);
-            return new ResponseEntity<>(id, HttpStatus.OK);
+            Suggestion updatedSuggestion = suggestionService.updateSuggestion(suggestion);
+            return new ResponseEntity<>(updatedSuggestion, HttpStatus.OK);
         } catch (HibernateException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

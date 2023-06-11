@@ -1,5 +1,7 @@
 package com.selyuto.termbase.controllers;
 
+import com.selyuto.termbase.annotations.PrivilegeCheck;
+import com.selyuto.termbase.enums.Privilege;
 import com.selyuto.termbase.models.User;
 import com.selyuto.termbase.services.UserService;
 
@@ -15,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/users")
@@ -57,6 +57,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PrivilegeCheck(privileges = {Privilege.USER_MANAGER})
     public ResponseEntity<Long> editUser(@RequestBody User user, @PathVariable Long id) {
         try {
             userService.editUser(user);

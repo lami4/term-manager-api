@@ -52,9 +52,9 @@ public class SuggestionService {
         return suggestion.getId();
     }
 
-    public Long updateSuggestion(Suggestion suggestion) {
+    public Suggestion updateSuggestion(Suggestion suggestion) {
         suggestionRepository.save(suggestion);
-        return suggestion.getId();
+        return suggestion;
     }
 
     @Transactional
