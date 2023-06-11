@@ -1,6 +1,6 @@
 package com.selyuto.termbase.controllers;
 
-import com.selyuto.termbase.annotations.PrivilegeCheck;
+import com.selyuto.termbase.annotations.RequiredPrivileges;
 import com.selyuto.termbase.enums.Privilege;
 import com.selyuto.termbase.models.User;
 import com.selyuto.termbase.services.UserService;
@@ -29,11 +29,13 @@ public class UserController {
     }
 
     @GetMapping("")
+    @RequiredPrivileges(privileges = {Privilege.USER_MANAGER})
     public List<User> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.USER_MANAGER})
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         try {
             User user = userService.getUserById(id);
@@ -47,6 +49,7 @@ public class UserController {
     }
 
     @PostMapping("")
+    @RequiredPrivileges(privileges = {Privilege.USER_MANAGER})
     public ResponseEntity<Long> createUser(@RequestBody User user) {
         try {
             Long id = userService.createUser(user);
@@ -57,7 +60,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PrivilegeCheck(privileges = {Privilege.USER_MANAGER})
+    @RequiredPrivileges(privileges = {Privilege.USER_MANAGER})
     public ResponseEntity<Long> editUser(@RequestBody User user, @PathVariable Long id) {
         try {
             userService.editUser(user);
@@ -68,6 +71,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.USER_MANAGER})
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }

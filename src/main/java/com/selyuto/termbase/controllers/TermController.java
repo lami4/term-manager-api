@@ -1,6 +1,7 @@
 package com.selyuto.termbase.controllers;
 
-
+import com.selyuto.termbase.annotations.RequiredPrivileges;
+import com.selyuto.termbase.enums.Privilege;
 import com.selyuto.termbase.models.Term;
 import com.selyuto.termbase.services.TermService;
 
@@ -29,11 +30,13 @@ public class TermController {
     }
 
     @GetMapping("")
+    @RequiredPrivileges(privileges = {Privilege.TERM_MANAGER})
     public List<Term> getTerms() {
         return termService.getTerms();
     }
 
     @GetMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.TERM_MANAGER})
     public ResponseEntity<Term> getTermById(@PathVariable Long id) {
         try {
             Term term = termService.getTermById(id);
@@ -46,6 +49,7 @@ public class TermController {
         }
     }
     @PostMapping("")
+    @RequiredPrivileges(privileges = {Privilege.TERM_MANAGER})
     public ResponseEntity<Long> creteTerm(@RequestBody Term term) {
         try {
             Long id = termService.createTerm(term);
@@ -55,6 +59,7 @@ public class TermController {
         }
     }
     @PutMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.TERM_MANAGER})
     public ResponseEntity<Term> updateTerm(@RequestBody Term term, @PathVariable Long id) {
         try {
             Term updatedTerm = termService.updateTerm(term);
@@ -64,6 +69,7 @@ public class TermController {
         }
     }
     @DeleteMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.TERM_MANAGER})
     public void deleteTerm(@PathVariable Long id) {
         termService.deleteTerm(id);
     }

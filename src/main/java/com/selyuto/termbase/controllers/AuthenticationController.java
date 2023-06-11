@@ -1,6 +1,5 @@
 package com.selyuto.termbase.controllers;
 
-
 import com.selyuto.termbase.services.AuthenticationService;
 
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static com.selyuto.termbase.authentication.AuthenticationConstants.SESSION_ID_COOKIE_NAME;
 
 @RestController
 @RequestMapping("/auth")
@@ -31,11 +32,11 @@ public class AuthenticationController {
 
     @GetMapping("/logout")
     public ResponseEntity<String> signOut(HttpServletRequest request, HttpServletResponse response) {
-        return authenticationService.signOut(WebUtils.getCookie(request, "sessionIdTm"), response);
+        return authenticationService.signOut(WebUtils.getCookie(request, SESSION_ID_COOKIE_NAME), response);
     }
 
     @GetMapping("/validate")
     public ResponseEntity<Map<String, Object>> validateSession(HttpServletRequest request, HttpServletResponse response) {
-        return authenticationService.validateSession(WebUtils.getCookie(request, "sessionIdTm"), response);
+        return authenticationService.validateSession(WebUtils.getCookie(request, SESSION_ID_COOKIE_NAME), response);
     }
 }

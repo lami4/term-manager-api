@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.selyuto.termbase.authentication.AuthenticationConstants.SESSION_ID_COOKIE_NAME;
+
 @Service
 public class AuthenticationService {
 
@@ -49,7 +51,7 @@ public class AuthenticationService {
             return new ResponseEntity<>(signInResult, HttpStatus.OK);
         }
         signInResult.put("status", "Wrong credentials");
-        return new ResponseEntity<>(signInResult, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(signInResult, HttpStatus.UNAUTHORIZED);
     }
 
     public ResponseEntity<String> signOut(Cookie sessionIdCookie, HttpServletResponse response) {
@@ -65,10 +67,10 @@ public class AuthenticationService {
         Map<String, Object> validationResult = new HashMap<>();
         if (sessionIdCookie == null) {
             validationResult.put("status", "No session ID provided");
-            return new ResponseEntity<>(validationResult, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(validationResult, HttpStatus.UNAUTHORIZED);
         } else if (!authenticator.isSessionIdAlreadyUsed(sessionIdCookie.getValue())) {
             validationResult.put("status", "No session found");
-            return new ResponseEntity<>(validationResult, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(validationResult, HttpStatus.UNAUTHORIZED);
         } else {
             Optional<Long> userId = authenticator.findUserIdBySessionId(sessionIdCookie.getValue());
             if (userId.isPresent()) {
@@ -88,7 +90,7 @@ public class AuthenticationService {
     }
 
     private Cookie buildSessionIdCookie(String sessionId, int maxAge) {
-        Cookie cookie = new Cookie("sessionIdTm", sessionId);
+        Cookie cookie = new Cookie(SESSION_ID_COOKIE_NAME, sessionId);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);

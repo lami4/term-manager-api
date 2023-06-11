@@ -16,6 +16,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static com.selyuto.termbase.authentication.AuthenticationConstants.SESSION_ID_COOKIE_NAME;
+
 @Component
 public class AuthenticationFilter implements Filter {
     private final Authenticator authenticator;
@@ -34,7 +37,7 @@ public class AuthenticationFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
-        Cookie sessionIdCookie = WebUtils.getCookie(req, "sessionIdTm");
+        Cookie sessionIdCookie = WebUtils.getCookie(req, SESSION_ID_COOKIE_NAME);
         boolean hasSessionId = false;
         boolean isSessionValid = false;
         if (sessionIdCookie != null) {

@@ -6,8 +6,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class InterceptorsConfig implements WebMvcConfigurer {
+
+    private final PrivilegeCheckInterceptor privilegeCheckInterceptor;
+
+    public InterceptorsConfig(PrivilegeCheckInterceptor privilegeCheckInterceptor) {
+        this.privilegeCheckInterceptor = privilegeCheckInterceptor;
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new PrivilegeCheckInterceptor());
+        registry.addInterceptor(privilegeCheckInterceptor);
     }
 }

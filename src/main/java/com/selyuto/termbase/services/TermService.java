@@ -1,6 +1,5 @@
 package com.selyuto.termbase.services;
 
-
 import com.selyuto.termbase.authentication.Authenticator;
 import com.selyuto.termbase.models.Term;
 import com.selyuto.termbase.models.User;
@@ -12,6 +11,8 @@ import org.springframework.web.util.WebUtils;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static com.selyuto.termbase.authentication.AuthenticationConstants.SESSION_ID_COOKIE_NAME;
 
 @Service
 public class TermService {
@@ -35,7 +36,7 @@ public class TermService {
     }
 
     public Long createTerm(Term term) {
-        User user = authenticator.getUserBySessionIdCookie(WebUtils.getCookie(httpServletRequest, "sessionIdTm"));
+        User user = authenticator.getUserBySessionIdCookie(WebUtils.getCookie(httpServletRequest, SESSION_ID_COOKIE_NAME));
         if (user != null) {
             term.setAuthoredBy(user.getFullName());
         } else {

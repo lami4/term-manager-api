@@ -9,6 +9,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.Map;
 
 public interface TermRepository extends JpaRepository<Term, Long> {
-//    @Query(value = "INSERT INTO terms (id, properties) values (:id, cast(:properties as JSONB))", nativeQuery = true)
-//    void addTerm(@Param("id") Integer id, @Param("properties") Map<String, Object> properties);;
+
 }

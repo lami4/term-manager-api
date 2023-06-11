@@ -1,6 +1,5 @@
 package com.selyuto.termbase.services;
 
-
 import com.selyuto.termbase.dto.ColumnPositionSetting;
 import com.selyuto.termbase.models.Column;
 import com.selyuto.termbase.repositories.ColumnRepository;

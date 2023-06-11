@@ -1,6 +1,7 @@
 package com.selyuto.termbase.controllers;
 
-
+import com.selyuto.termbase.annotations.RequiredPrivileges;
+import com.selyuto.termbase.enums.Privilege;
 import com.selyuto.termbase.models.Suggestion;
 import com.selyuto.termbase.services.SuggestionService;
 
@@ -29,11 +30,13 @@ public class SuggestionController {
     }
 
     @GetMapping("")
+    @RequiredPrivileges(privileges = {Privilege.SUGGESTION_MANAGER})
     public List<Suggestion> getSuggestions() {
         return suggestionService.getSuggestions();
     }
 
     @GetMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.SUGGESTION_MANAGER})
     public ResponseEntity<Suggestion> getSuggestionById(@PathVariable Long id) {
         try {
             Suggestion suggestion = suggestionService.getSuggestionById(id);
@@ -57,6 +60,7 @@ public class SuggestionController {
     }
 
     @PutMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.SUGGESTION_MANAGER})
     public ResponseEntity<Suggestion> updateSuggestion(@RequestBody Suggestion suggestion, @PathVariable Long id) {
         try {
             Suggestion updatedSuggestion = suggestionService.updateSuggestion(suggestion);
@@ -67,11 +71,13 @@ public class SuggestionController {
     }
 
     @DeleteMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.SUGGESTION_MANAGER})
     public void deleteSuggestion(@PathVariable Long id) {
         suggestionService.deleteSuggestion(id);
     }
 
     @PutMapping("/{id}/accept")
+    @RequiredPrivileges(privileges = {Privilege.SUGGESTION_MANAGER})
     public ResponseEntity<Long> acceptSuggestion(@RequestBody Suggestion suggestion, @PathVariable Long id) {
         try {
             suggestionService.acceptSuggestion(suggestion);

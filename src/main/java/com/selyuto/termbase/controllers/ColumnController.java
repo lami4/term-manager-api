@@ -1,7 +1,8 @@
 package com.selyuto.termbase.controllers;
 
-
+import com.selyuto.termbase.annotations.RequiredPrivileges;
 import com.selyuto.termbase.dto.ColumnPositionSetting;
+import com.selyuto.termbase.enums.Privilege;
 import com.selyuto.termbase.models.Column;
 import com.selyuto.termbase.services.ColumnService;
 
@@ -30,11 +31,13 @@ public class ColumnController {
     }
 
     @GetMapping("")
+    @RequiredPrivileges(privileges = {Privilege.TERM_GRID_MANAGER})
     public List<Column> getColumns() {
         return columnService.getColumns();
     }
 
     @GetMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.TERM_GRID_MANAGER})
     public ResponseEntity<Column> getColumnById(@PathVariable Long id) {
         try {
             Column column = columnService.getColumnById(id);
@@ -48,6 +51,7 @@ public class ColumnController {
     }
 
     @PostMapping("")
+    @RequiredPrivileges(privileges = {Privilege.TERM_GRID_MANAGER})
     public ResponseEntity<Long> createColumn(@RequestBody Column column) {
         try {
             Long id = columnService.saveColumn(column);
@@ -58,6 +62,7 @@ public class ColumnController {
     }
 
     @PutMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.TERM_GRID_MANAGER})
     public ResponseEntity<Column> updateColumn(@RequestBody Column column, @PathVariable Integer id) {
         try {
             Column updatedColumn = columnService.updateColumn(column);
@@ -68,11 +73,13 @@ public class ColumnController {
     }
 
     @DeleteMapping("/{id}")
+    @RequiredPrivileges(privileges = {Privilege.TERM_GRID_MANAGER})
     public void deleteColumn(@PathVariable Long id) {
         columnService.deleteColumn(id);
     }
 
     @PostMapping("/reorder")
+    @RequiredPrivileges(privileges = {Privilege.TERM_GRID_MANAGER})
     public void reorderColumns(@RequestBody List<ColumnPositionSetting> columnPositionSetting) {
         columnService.reorderColumns(columnPositionSetting);
     }
