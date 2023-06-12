@@ -75,4 +75,17 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
+
+    @PutMapping("/{id}/reset-password")
+    @RequiredPrivileges(privileges = {Privilege.USER_MANAGER})
+    public ResponseEntity<Long> resetPassword(@RequestBody User user, @PathVariable Long id) {
+        try {
+            userService.resetPassword(user);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        } catch (HibernateException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

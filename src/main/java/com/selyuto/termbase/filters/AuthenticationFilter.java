@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,8 +27,14 @@ import static com.selyuto.termbase.authentication.AuthenticationConstants.SESSIO
 public class AuthenticationFilter implements Filter {
     private final Authenticator authenticator;
 
+    Map<String, List<String>> publiclyAvailableUris = new HashMap<>();
+
     public AuthenticationFilter(Authenticator authenticator) {
         this.authenticator = authenticator;
+        publiclyAvailableUris.put("/auth/login", Collections.singletonList("GET"));
+        publiclyAvailableUris.put("/columns", Collections.singletonList("GET"));
+        publiclyAvailableUris.put("/terms", Collections.singletonList("GET"));
+        publiclyAvailableUris.put("/suggestions", Collections.singletonList("POST"));
     }
 
     @Override
@@ -45,11 +55,18 @@ public class AuthenticationFilter implements Filter {
             isSessionValid = authenticator.getActiveSessions().containsValue(sessionIdCookie.getValue());
         }
         boolean isOptions = req.getMethod().equals("OPTIONS");
-        if ((!hasSessionId || !isSessionValid) && !req.getRequestURI().equals("/auth/login") && !isOptions) {
+        if ((!hasSessionId || !isSessionValid) && !isOptions && !isPubliclyAvailableUri(req)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
         } else {
             filterChain.doFilter(req, res);
         }
+    }
+
+    private boolean isPubliclyAvailableUri(HttpServletRequest req) {
+        if (!publiclyAvailableUris.containsKey(req.getRequestURI())) {
+            return false;
+        }
+        return publiclyAvailableUris.get(req.getRequestURI()).contains(req.getMethod());
     }
 
     @Override

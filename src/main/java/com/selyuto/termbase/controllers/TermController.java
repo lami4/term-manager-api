@@ -30,7 +30,6 @@ public class TermController {
     }
 
     @GetMapping("")
-    @RequiredPrivileges(privileges = {Privilege.TERM_MANAGER})
     public List<Term> getTerms() {
         return termService.getTerms();
     }

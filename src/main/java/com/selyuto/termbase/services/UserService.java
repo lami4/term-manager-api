@@ -43,6 +43,10 @@ public class UserService {
         return user.getId();
     }
 
+    public void resetPassword(User user) {
+        userRepository.resetPassword(user.getPassword(), user.getId());
+    }
+
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

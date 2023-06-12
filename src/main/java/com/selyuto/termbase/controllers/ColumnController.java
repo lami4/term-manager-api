@@ -31,7 +31,6 @@ public class ColumnController {
     }
 
     @GetMapping("")
-    @RequiredPrivileges(privileges = {Privilege.TERM_GRID_MANAGER})
     public List<Column> getColumns() {
         return columnService.getColumns();
     }
