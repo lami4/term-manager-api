@@ -1,6 +1,8 @@
 package com.selyuto.termbase.controllers;
 
 import com.selyuto.termbase.annotations.RequiredPrivileges;
+import com.selyuto.termbase.dto.NotificationMessage;
+import com.selyuto.termbase.enums.Action;
 import com.selyuto.termbase.enums.Privilege;
 import com.selyuto.termbase.models.Term;
 import com.selyuto.termbase.services.TermService;
@@ -24,9 +26,11 @@ import java.util.List;
 public class TermController {
 
     final TermService termService;
+    final NotificationController notificationController;
 
-    public TermController(TermService termService) {
+    public TermController(TermService termService, NotificationController notificationController) {
         this.termService = termService;
+        this.notificationController = notificationController;
     }
 
     @GetMapping("")
@@ -52,6 +56,7 @@ public class TermController {
     public ResponseEntity<Long> creteTerm(@RequestBody Term term) {
         try {
             Long id = termService.createTerm(term);
+            notificationController.sendMessage(new NotificationMessage(Action.ADD_TERM));
             return new ResponseEntity<>(id, HttpStatus.OK);
         } catch (HibernateException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

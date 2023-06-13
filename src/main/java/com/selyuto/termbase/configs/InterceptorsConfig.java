@@ -1,4 +1,6 @@
-package com.selyuto.termbase.interceptors;
+package com.selyuto.termbase.configs;
+
+import com.selyuto.termbase.interceptors.PrivilegeCheckInterceptor;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

@@ -55,7 +55,10 @@ public class AuthenticationFilter implements Filter {
             isSessionValid = authenticator.getActiveSessions().containsValue(sessionIdCookie.getValue());
         }
         boolean isOptions = req.getMethod().equals("OPTIONS");
-        if ((!hasSessionId || !isSessionValid) && !isOptions && !isPubliclyAvailableUri(req)) {
+        if ((!hasSessionId || !isSessionValid)
+                && !isOptions
+                && !isPubliclyAvailableUri(req)
+                && !isWebSocket(req)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
         } else {
             filterChain.doFilter(req, res);
@@ -67,6 +70,10 @@ public class AuthenticationFilter implements Filter {
             return false;
         }
         return publiclyAvailableUris.get(req.getRequestURI()).contains(req.getMethod());
+    }
+
+    private boolean isWebSocket(HttpServletRequest req) {
+        return req.getRequestURI().matches("^/tb-websocket.*$");
     }
 
     @Override

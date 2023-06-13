@@ -1,6 +1,8 @@
 package com.selyuto.termbase.controllers;
 
 import com.selyuto.termbase.annotations.RequiredPrivileges;
+import com.selyuto.termbase.dto.NotificationMessage;
+import com.selyuto.termbase.enums.Action;
 import com.selyuto.termbase.enums.Privilege;
 import com.selyuto.termbase.models.Suggestion;
 import com.selyuto.termbase.services.SuggestionService;
@@ -24,9 +26,11 @@ import java.util.List;
 public class SuggestionController {
 
     final SuggestionService suggestionService;
+    final NotificationController notificationController;
 
-    public SuggestionController(SuggestionService suggestionService) {
+    public SuggestionController(SuggestionService suggestionService, NotificationController notificationController) {
         this.suggestionService = suggestionService;
+        this.notificationController = notificationController;
     }
 
     @GetMapping("")
@@ -53,6 +57,7 @@ public class SuggestionController {
     public ResponseEntity<Long> createSuggestion(@RequestBody Suggestion suggestion) {
         try {
             Long id = suggestionService.createSuggestion(suggestion);
+            notificationController.sendMessage(new NotificationMessage(Action.ADD_SUGGESTION));
             return new ResponseEntity<>(id, HttpStatus.OK);
         } catch (HibernateException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
