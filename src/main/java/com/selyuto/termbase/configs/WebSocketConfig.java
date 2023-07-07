@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/tb-websocket").setAllowedOrigins("http://localhost:8080").withSockJS();
+        registry.addEndpoint("/tb-websocket").setAllowedOrigins("http://terminologist.ru").withSockJS();
     }
 
 }

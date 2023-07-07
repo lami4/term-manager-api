@@ -22,7 +22,7 @@ public class TermbaseappApplication {
             public void addCorsMappings(CorsRegistry registry) {
                 registry
                         .addMapping("/**")
-                        .allowedOrigins("http://localhost:8080")
+                        .allowedOrigins("http://terminologist.ru")
                         .allowedHeaders("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization", "password", "email", "Set-Cookie")
                         .allowedMethods("GET", "POST", "OPTIONS", "DELETE", "PUT")
                         .allowCredentials(true);
