@@ -1,6 +1,7 @@
 package com.selyuto.termbase.services;
 
 import com.selyuto.termbase.authentication.Authenticator;
+import com.selyuto.termbase.enums.Status;
 import com.selyuto.termbase.models.Privilege;
 import com.selyuto.termbase.models.User;
 
@@ -38,20 +39,27 @@ public class AuthenticationService {
     public ResponseEntity<Map<String, Object>> signIn(String email, String password, HttpServletResponse response) {
         Map<String, Object> signInResult = new HashMap<>();
         User user = userService.getUserByEmail(email);
-        if (user != null && user.getPassword().equals(password)) {
-            if (authenticator.isUserAlreadyAuthenticated(user.getId())) {
-                authenticator.voidSessionByUserId(user.getId());
-            }
-            String sessionId = generateUserId();
-            Cookie cookie = buildSessionIdCookie(sessionId, COOKIE_EXPIRE_PERIOD_IN_SECONDS);
-            response.addCookie(cookie);
-            authenticator.addSession(user.getId(), sessionId, cookie.getMaxAge());
-            signInResult.put("privileges", getPrivilegesByUserId(user.getId()));
-            signInResult.put("status", "Signed in successfully");
-            return new ResponseEntity<>(signInResult, HttpStatus.OK);
+
+        if (user == null || !user.getPassword().equals(password)) {
+            signInResult.put("status", "Wrong credentials");
+            return new ResponseEntity<>(signInResult, HttpStatus.UNAUTHORIZED);
         }
-        signInResult.put("status", "Wrong credentials");
-        return new ResponseEntity<>(signInResult, HttpStatus.UNAUTHORIZED);
+
+        if (user.getStatus() == Status.BLOCKED) {
+            signInResult.put("status", "User is blocked");
+            return new ResponseEntity<>(signInResult, HttpStatus.FORBIDDEN);
+        }
+
+        if (authenticator.isUserAlreadyHasSessionId(user.getId())) {
+            authenticator.voidSessionByUserId(user.getId());
+        }
+        String sessionId = generateUserId();
+        Cookie cookie = buildSessionIdCookie(sessionId, COOKIE_EXPIRE_PERIOD_IN_SECONDS);
+        response.addCookie(cookie);
+        authenticator.addSession(user.getId(), sessionId, cookie.getMaxAge());
+        signInResult.put("privileges", getPrivilegesByUserId(user.getId()));
+        signInResult.put("status", "Signed in successfully");
+        return new ResponseEntity<>(signInResult, HttpStatus.OK);
     }
 
     public ResponseEntity<String> signOut(Cookie sessionIdCookie, HttpServletResponse response) {

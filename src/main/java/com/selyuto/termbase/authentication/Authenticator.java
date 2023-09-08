@@ -84,7 +84,7 @@ public class Authenticator {
                 .anyMatch(entry -> entry.getValue().equals(sessionId));
     }
 
-    public boolean isUserAlreadyAuthenticated(Long userId) {
+    public boolean isUserAlreadyHasSessionId(Long userId) {
         return activeSessions.get(userId) != null;
     }
 
