@@ -1,5 +1,7 @@
 package com.selyuto.termbase.services;
 
+import com.selyuto.termbase.authentication.Authenticator;
+import com.selyuto.termbase.enums.Status;
 import com.selyuto.termbase.models.User;
 import com.selyuto.termbase.repositories.UserRepository;
 
@@ -11,10 +13,13 @@ import java.util.List;
 @Service
 public class UserService {
 
+    private final Authenticator authenticator;
+
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, Authenticator authenticator) {
         this.userRepository = userRepository;
+        this.authenticator = authenticator;
     }
 
     public List<User> getUsers() {
@@ -23,10 +28,6 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
-    }
-
-    public User getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
     }
 
     public Long createUser(User user) {
@@ -38,9 +39,16 @@ public class UserService {
     }
 
     public Long editUser(User user) {
+        if (user.getStatus() == Status.BLOCKED) {
+            voidUserSession(user);
+        }
         user.setDateUpdated(new Date());
         userRepository.save(user);
         return user.getId();
+    }
+
+    private void voidUserSession(User user) {
+        authenticator.voidSessionByUserId(user.getId());
     }
 
     public void resetPassword(User user) {

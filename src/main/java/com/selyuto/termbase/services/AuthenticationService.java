@@ -5,6 +5,7 @@ import com.selyuto.termbase.enums.Status;
 import com.selyuto.termbase.models.Privilege;
 import com.selyuto.termbase.models.User;
 
+import com.selyuto.termbase.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,18 +28,18 @@ public class AuthenticationService {
 
     private static final int COOKIE_EXPIRE_PERIOD_IN_SECONDS = 84000;
     private final Authenticator authenticator;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final PrivilegeService privilegeService;
 
-    public AuthenticationService(Authenticator authenticator, UserService userService, PrivilegeService privilegeService) {
+    public AuthenticationService(Authenticator authenticator, UserRepository userRepository, PrivilegeService privilegeService) {
         this.authenticator = authenticator;
-        this.userService = userService;
+        this.userRepository = userRepository;
         this.privilegeService = privilegeService;
     }
 
     public ResponseEntity<Map<String, Object>> signIn(String email, String password, HttpServletResponse response) {
         Map<String, Object> signInResult = new HashMap<>();
-        User user = userService.getUserByEmail(email);
+        User user = userRepository.getUserByEmail(email);
 
         if (user == null || !user.getPassword().equals(password)) {
             signInResult.put("status", "Wrong credentials");

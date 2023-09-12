@@ -2,7 +2,7 @@ package com.selyuto.termbase.authentication;
 
 import com.selyuto.termbase.models.Privilege;
 import com.selyuto.termbase.models.User;
-import com.selyuto.termbase.services.UserService;
+import com.selyuto.termbase.repositories.UserRepository;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,10 +23,10 @@ public class Authenticator {
     private ConcurrentHashMap <String, Long> cookieExpireDates = new ConcurrentHashMap<>();
     private ConcurrentHashMap <String, List<Long>> sessionPrivileges = new ConcurrentHashMap<>();
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public Authenticator(UserService userService) {
-        this.userService = userService;
+    public Authenticator(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public Map<Long, String> getActiveSessions() {
@@ -34,14 +34,16 @@ public class Authenticator {
     }
 
     public void addSession(Long userId, String sessionId, int cookieMaxAge) {
-        activeSessions.put(userId, sessionId);
-        cookieExpireDates.put(sessionId, Instant.now().getEpochSecond() + (long) cookieMaxAge);
-        List<Long> privilegeIds = userService.getUserById(userId)
-                .getPrivileges()
-                .stream()
-                .map(Privilege::getId)
-                .collect(Collectors.toList());
-        sessionPrivileges.put(sessionId, privilegeIds);
+        userRepository.findById(userId).ifPresent(user -> {
+            activeSessions.put(userId, sessionId);
+            cookieExpireDates.put(sessionId, Instant.now().getEpochSecond() + (long) cookieMaxAge);
+            List<Long> privilegeIds = user
+                    .getPrivileges()
+                    .stream()
+                    .map(Privilege::getId)
+                    .collect(Collectors.toList());
+            sessionPrivileges.put(sessionId, privilegeIds);
+        });
     }
 
     public void voidSessionBySessionId(String sessionId) {
@@ -91,7 +93,8 @@ public class Authenticator {
     public User getUserBySessionIdCookie(Cookie sessionIdCookie) {
         if (sessionIdCookie == null) return null;
         Optional<Long> id = findUserIdBySessionId(sessionIdCookie.getValue());
-        return id.map(userService::getUserById).orElse(null);
+        if (!id.isPresent()) return null;
+        return userRepository.findById(id.get()).orElse(null);
     }
 
     public List<Long> getSessionPrivileges(String sessionId) {
