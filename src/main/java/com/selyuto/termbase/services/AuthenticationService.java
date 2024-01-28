@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -59,6 +58,8 @@ public class AuthenticationService {
         response.addCookie(cookie);
         authenticator.addSession(user.getId(), sessionId, cookie.getMaxAge());
         signInResult.put("privileges", getPrivilegesByUserId(user.getId()));
+        signInResult.put("userId", user.getId());
+        signInResult.put("userEmail", user.getEmail());
         signInResult.put("status", "Signed in successfully");
         return new ResponseEntity<>(signInResult, HttpStatus.OK);
     }
@@ -81,9 +82,11 @@ public class AuthenticationService {
             validationResult.put("status", "No session found");
             return new ResponseEntity<>(validationResult, HttpStatus.UNAUTHORIZED);
         } else {
-            Optional<Long> userId = authenticator.findUserIdBySessionId(sessionIdCookie.getValue());
-            if (userId.isPresent()) {
-                validationResult.put("privileges", getPrivilegesByUserId(userId.get()));
+            User user = authenticator.getUserBySessionIdCookie(sessionIdCookie);
+            if (user != null) {
+                validationResult.put("privileges", getPrivilegesByUserId(user.getId()));
+                validationResult.put("userId", user.getId());
+                validationResult.put("userEmail", user.getEmail());
             } else {
                 validationResult.put("privileges", Collections.emptyList());
             }

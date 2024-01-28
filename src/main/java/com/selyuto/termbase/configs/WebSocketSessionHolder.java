@@ -31,7 +31,7 @@ public class WebSocketSessionHolder {
         }
     }
 
-    public List<WebSocketSession> getUserWebSocketSessionById(Long userId) {
+    public List<WebSocketSession> getUserWebSocketSessionsById(Long userId) {
        return websocketSessions.get(userId);
     }
 }
