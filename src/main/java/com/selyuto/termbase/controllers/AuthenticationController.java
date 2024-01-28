@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.WebUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +28,10 @@ public class AuthenticationController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<Map<String, Object>> signIn(HttpServletRequest request, HttpServletResponse response) {
-        return authenticationService.signIn(request.getHeader("email"), request.getHeader("password"), response);
+    public ResponseEntity<Map<String, Object>> signIn(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+        String password = URLDecoder.decode(request.getHeader("password"),"UTF-8");
+        String email = URLDecoder.decode(request.getHeader("email"),"UTF-8");
+        return authenticationService.signIn(email, password, response);
     }
 
     @GetMapping("/logout")
